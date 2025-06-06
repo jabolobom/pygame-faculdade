@@ -49,7 +49,7 @@ while running:
                 if 0 <= bx < len(map_data[0]) and 0 <= by < len(map_data):
                     if map_data[by][bx] == 2:
                         map_data[by][bx] = 0
-                    explosions.append({'x': bx, 'y': by, 'timer': 500})  # 500ms de explosão
+                    explosions.append({'x': bx, 'y': by, 'timer': 250})  # 250ms de explosão
             bombs.remove(bomb)
         else:
             bomb.draw(screen)

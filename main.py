@@ -11,6 +11,7 @@ clock = pygame.time.Clock()
 
 player = Player(1, 1)
 bombs = []
+explosions = []
 
 # Delay para movimento contínuo
 MOVE_DELAY = 150  # milissegundos
@@ -39,18 +40,31 @@ while running:
     draw_map(screen, map_data)
     player.draw(screen)
 
-    # Atualiza e desenha bombas
+    # Atualizar e desenhar bombas
     for bomb in bombs[:]:
         if bomb.update():
+            # Gerar explosão
             for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
-                bx = bomb.grid_x + dx
-                by = bomb.grid_y + dy
+                bx, by = bomb.grid_x + dx, bomb.grid_y + dy
                 if 0 <= bx < len(map_data[0]) and 0 <= by < len(map_data):
-                    if map_data[by][bx] == 2:  # bloco quebrável
+                    if map_data[by][bx] == 2:
                         map_data[by][bx] = 0
+                    explosions.append({'x': bx, 'y': by, 'timer': 500})  # 500ms de explosão
             bombs.remove(bomb)
         else:
             bomb.draw(screen)
+
+    # Atualizar e desenhar explosões
+    for exp in explosions[:]:
+        exp['timer'] -= clock.get_time()
+        if exp['timer'] <= 0:
+            explosions.remove(exp)
+
+    # Verificar se jogador colidiu com explosão
+    for exp in explosions:
+        if exp['x'] == player.grid_x and exp['y'] == player.grid_y:
+            print("GAME OVER: Você foi atingido pela explosão!")
+            running = False
 
     pygame.display.flip()
     clock.tick(FPS)

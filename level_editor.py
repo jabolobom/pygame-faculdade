@@ -2,7 +2,7 @@ import pygame, json
 from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TILE_SIZE
 from src.map import draw_map
 from datetime import datetime
-from src.main_menu import InputBox
+from src.input_box import InputBox
 
 empty_map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

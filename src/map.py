@@ -23,8 +23,8 @@ floor = pygame.transform.scale(floor, (TILE_SIZE, TILE_SIZE))
 solid_block = pygame.transform.scale(solid_block, (TILE_SIZE, TILE_SIZE))
 breakable_block = pygame.transform.scale(breakable_block, (TILE_SIZE, TILE_SIZE))
 
-def draw_map(screen, map_data):
-    for y, row in enumerate(map_data):
+def draw_map(screen, selected_map):
+    for y, row in enumerate(selected_map):
         for x, tile in enumerate(row):
             pos = (x * TILE_SIZE, y * TILE_SIZE)
             screen.blit(floor, pos)  # chão sempre desenhado por baixo

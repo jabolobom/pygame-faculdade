@@ -20,11 +20,10 @@ def map_selection(maplist):
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Level Editor') # dá pra mudar mais tarde e rodar
+pygame.display.set_caption('Level Editor') # dá pra mudar mais tarde e rodar junto com o programa principal, talvez um main menu com escolha entre jogo e editor
 clock = pygame.time.Clock()
 
 working_map = map_selection(empty_map)  # escolhe o mapa a ser editado
-
 # tudo dentro do mesmo programa...
 
 running = True
@@ -36,7 +35,7 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN: # handling da posição de cada clique
             x,y = pygame.mouse.get_pos()
             colclick = x // TILE_SIZE
             rowclick = y // TILE_SIZE
@@ -47,9 +46,9 @@ while running:
                 working_map[rowclick][colclick] = 0
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE: # aperta espaço pra salvar, PLACEHOLDER
                 final_map = working_map
-                filename = datetime.now().strftime("%Y-%m-%d %H%M%S") + "_map" + ".json"
+                filename = datetime.now().strftime("%Y-%m-%d %H%M%S") + "_map" + ".json" # placeholder, intenção é permitir o usuário nomear o mapa resultante
                 with open(filename, "w") as f:
                     json.dump(final_map, f)
                     f.close()

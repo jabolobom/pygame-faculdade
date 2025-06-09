@@ -20,7 +20,7 @@ def map_selection(maplist):
     return maplist # nõa faz nada, PLACEHOLDER!!!!!!
 
 def save_map(map_name, map_array):
-    filename = map_name + ".json"  # placeholder, intenção é permitir o usuário nomear o mapa resultante
+    filename = map_name + ".json" # pega o nome do mapa e salva em .json, pra facilitar a leitura depois
     with open(filename, "w") as f:
         json.dump(map_array, f)
         f.close()
@@ -31,15 +31,13 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Level Editor') # dá pra mudar mais tarde e rodar junto com o programa principal, talvez um main menu com escolha entre jogo e editor
 clock = pygame.time.Clock()
 
-renamebox = InputBox(100, 100, TILE_SIZE, TILE_SIZE)
-working_map = map_selection(empty_map)  # escolhe o mapa a ser editado
-# tudo dentro do mesmo programa...
+renamebox = InputBox(100, 100, TILE_SIZE, TILE_SIZE) # posição tá zoada, precisa arrumar depois
+working_map = map_selection(empty_map)  # escolhe o mapa a ser editado, placeholder
 
 running = True
 while running:
 
     current_time = pygame.time.get_ticks()
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -48,7 +46,7 @@ while running:
         if renamebox.active:
             mapname = renamebox.handle_event(event)
             if mapname:
-                save_map(mapname, working_map)
+                save_map(mapname, working_map) # salva o mapa
 
         if event.type == pygame.MOUSEBUTTONDOWN: # handling da posição de cada clique
             x,y = pygame.mouse.get_pos()
@@ -62,12 +60,12 @@ while running:
                         working_map[rowclick][colclick] = 0
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_s:
+            if event.key == pygame.K_s: # aperta S pra abrir a caixa de texto
                 if not renamebox.active:
                     renamebox.active = True
 
     draw_map(screen, working_map)
-    if renamebox.active:
+    if renamebox.active: # se ela estiver ativa, desenha na tela, depois do mapa pra ficar na frente
         renamebox.update()
         renamebox.draw(screen)
     pygame.display.flip()

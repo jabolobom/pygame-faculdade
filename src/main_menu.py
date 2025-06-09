@@ -5,6 +5,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 BG_COLOR = pygame.Color("darkblue")
+FONT_COLOR = pygame.Color("white")
 FONT = pygame.font.SysFont("comicsans", 32)
 
 class InputBox:
@@ -12,30 +13,30 @@ class InputBox:
         self.rect = pygame.Rect(x, y, width, height)
         self.color = BG_COLOR
         self.text = text
-        self.txt_surface = FONT.render(self.text, False, BG_COLOR)
+        self.txt_surface = FONT.render(self.text, False, FONT_COLOR)
         self.active = False
 
     def handle_event(self, event):
             if self.active:
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        outputname = self.text
-                        self.text = ''
+                    if event.key == pygame.K_RETURN: # se apertar enter
                         self.active = False
-                        return outputname
-                    elif event.key == pygame.K_BACKSPACE:
+                        return self.text # retorna o texto escrito
+                    elif event.key == pygame.K_BACKSPACE: # apagar texto
                         self.text = self.text[:-1]
                     else:
                         self.text += event.unicode
 
-                    self.txt_surface = FONT.render(self.text, False, BG_COLOR)
+                    self.txt_surface = FONT.render(self.text, False, FONT_COLOR)
             return 0
-    def update(self):
+
+    def update(self): # atualiza a aparencia, aumenta conforme o texto
         width = max(200, self.txt_surface.get_width()+10) # +10 = margem
         self.rect.width = width
 
-    def draw(self, screen):
+    def draw(self, screen): #
+        pygame.draw.rect(screen, self.color, self.rect)
         screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
-        pygame.draw.rect(screen, self.color, self.rect, 2)
+
 
 

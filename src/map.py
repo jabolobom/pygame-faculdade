@@ -1,17 +1,6 @@
-import pygame
-from src.settings import TILE_SIZE
-
-map_data = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 1],
-    [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1],
-    [1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1],
-    [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1],
-    [1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1],
-    [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1],
-    [1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-]
+import json
+import pygame, os
+from src.settings import TILE_SIZE, PREMADE_MAP_PATH, USER_MAP_PATH
 
 # Carregando as imagens dos blocos
 floor = pygame.image.load("assets/images/floor.jfif")
@@ -32,3 +21,65 @@ def draw_map(screen, selected_map):
                 screen.blit(solid_block, pos)
             elif tile == 2:
                 screen.blit(breakable_block, pos)
+
+def map_loader(ppath, upath): # basicamente o ESQUELETO da função, placeholder ao extremo, precisamos do main menu pra definir
+    # como terminar essa parte.
+
+    # no momento vai funcionar dentro do terminal...
+    maplist = list()
+    is_map_selected = False
+
+    while not is_map_selected: # ATENÇÃO, NÃO TEM CHECK DE ERRO !!!NENHUM!!! o programa VAI QUEBRAR se digitar algo não intencional...
+        choice = input("Escolha 1: Mapas Premade; 2: Mapas de usuários\n>")
+        match choice:
+            case "1":
+                for name in os.listdir(ppath):
+                    if name.endswith(".json"):
+                        maplist.append(name)
+                try:
+                    for i, name in enumerate(maplist):
+                        print(f"Mapa {i}: {name}")
+
+                    mapchoice = int(input("Escolha o mapa através do index: "))
+                except ValueError:
+                    print("Invalid choice")
+
+                if maplist[mapchoice]:
+
+                    is_map_selected = True
+                    filepath = os.path.join(ppath, maplist[mapchoice])
+
+                    with open(filepath, "r") as f:
+                        loaded_map = json.load(f)
+                        f.close()
+                    return loaded_map
+
+            case "2":
+                for name in os.listdir(upath):
+                    if name.endswith(".json"):
+                        print(f"Map: {name}")
+                        maplist.append(name)
+                try:
+                    for i, name in enumerate(maplist):
+                        print(f"Mapa {i}: {name}")
+
+                    mapchoice = int(input("Escolha o mapa através do index: "))
+                except ValueError:
+                    print("Invalid choice")
+
+                if maplist[mapchoice]:
+
+                    is_map_selected = True
+                    filepath = os.path.join(upath, maplist[mapchoice])
+
+                    with open(filepath, "r") as f:
+                        loaded_map = json.load(f)
+                        f.close()
+                    return loaded_map
+
+            case _:
+                print("opção inválida")
+
+    return None
+
+map_data = map_loader(PREMADE_MAP_PATH, USER_MAP_PATH)

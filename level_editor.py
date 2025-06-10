@@ -1,27 +1,15 @@
+import os
+
 import pygame, json
-from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TILE_SIZE
-from src.map import draw_map
+from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TILE_SIZE, USER_MAP_PATH
+from src.map import draw_map, map_data
 from datetime import datetime
 from src.input_box import InputBox
 
-empty_map = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-]
-
-def map_selection(maplist):
-    return maplist # nõa faz nada, PLACEHOLDER!!!!!!
-
 def save_map(map_name, map_array):
     filename = map_name + ".json" # pega o nome do mapa e salva em .json, pra facilitar a leitura depois
-    with open(filename, "w") as f:
+    filepath = os.path.join(USER_MAP_PATH, filename)
+    with open(filepath, "w") as f:
         json.dump(map_array, f)
         f.close()
     pygame.quit()
@@ -32,7 +20,7 @@ pygame.display.set_caption('Level Editor') # dá pra mudar mais tarde e rodar ju
 clock = pygame.time.Clock()
 
 renamebox = InputBox(100, 100, TILE_SIZE, TILE_SIZE) # posição tá zoada, precisa arrumar depois
-working_map = map_selection(empty_map)  # escolhe o mapa a ser editado, placeholder
+working_map = map_data  # escolhe o mapa a ser editado, placeholder
 
 running = True
 while running:

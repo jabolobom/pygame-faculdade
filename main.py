@@ -4,6 +4,10 @@ from src.map import map_data, draw_map
 from src.player import Player
 from src.bomb import Bomb
 
+explosion_img = pygame.image.load("assets/images/explosion.png")
+explosion_img = pygame.transform.scale(explosion_img, (64, 64))  # Ou use TILE_SIZE se quiser
+
+
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bomberman Clone")
@@ -47,15 +51,18 @@ while running:
             for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
                 bx, by = bomb.grid_x + dx, bomb.grid_y + dy
                 if 0 <= bx < len(map_data[0]) and 0 <= by < len(map_data):
+                    if map_data[by][bx] == 1:
+                        continue  # parede sólida, não explode nem passa
                     if map_data[by][bx] == 2:
-                        map_data[by][bx] = 0
-                    explosions.append({'x': bx, 'y': by, 'timer': 250})  # 250ms de explosão
+                        map_data[by][bx] = 0  # destrói bloco
+                    explosions.append({'x': bx, 'y': by, 'timer': 500})
             bombs.remove(bomb)
         else:
             bomb.draw(screen)
 
     # Atualizar e desenhar explosões
     for exp in explosions[:]:
+        screen.blit(explosion_img, (exp['x'] * 64, exp['y'] * 64))  # Ou use TILE_SIZE
         exp['timer'] -= clock.get_time()
         if exp['timer'] <= 0:
             explosions.remove(exp)
@@ -70,3 +77,4 @@ while running:
     clock.tick(FPS)
 
 pygame.quit()
+

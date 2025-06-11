@@ -48,14 +48,7 @@ while running:
     for bomb in bombs[:]:
         if bomb.update():
             # Gerar explosão
-            for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
-                bx, by = bomb.grid_x + dx, bomb.grid_y + dy
-                if 0 <= bx < len(map_data[0]) and 0 <= by < len(map_data):
-                    if map_data[by][bx] == 1:
-                        continue  # parede sólida, não explode nem passa
-                    if map_data[by][bx] == 2:
-                        map_data[by][bx] = 0  # destrói bloco
-                    explosions.append({'x': bx, 'y': by, 'timer': 500})
+            bomb.explode(map_data, explosions)
             bombs.remove(bomb)
         else:
             bomb.draw(screen)

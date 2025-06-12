@@ -43,8 +43,12 @@ while running:
 
     screen.fill((0, 0, 0))
     draw_map(screen, map_data)
+    
     player_one.draw(screen)
     player_two.draw(screen)
+
+    player_one.update()
+    player_two.update()
 
     # Atualizar e desenhar bombas
     for bomb in bombs[:]:

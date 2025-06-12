@@ -1,23 +1,27 @@
 import pygame
-from src.settings import TILE_SIZE
+from src.settings import TILE_SIZE, PLAYER_ONE_COMMANDS, PLAYER_TWO_COMMANDS
 
 class Player:
-    def __init__(self, x, y):
+    def __init__(self, x, y, player_id=1):
         self.grid_x = x
         self.grid_y = y
         self.image = pygame.image.load("assets/images/player.png")
         self.image = pygame.transform.scale(self.image, (TILE_SIZE, TILE_SIZE))
+        if player_id == 2:
+            self.commands = PLAYER_TWO_COMMANDS
+        else:
+            self.commands = PLAYER_ONE_COMMANDS
 
     def handle_movement(self, keys, map_data):
         new_x, new_y = self.grid_x, self.grid_y
 
-        if keys[pygame.K_LEFT]:
+        if keys[self.commands["left"]]:
             new_x -= 1
-        elif keys[pygame.K_RIGHT]:
+        elif keys[self.commands["right"]]:
             new_x += 1
-        elif keys[pygame.K_UP]:
+        elif keys[self.commands["up"]]:
             new_y -= 1
-        elif keys[pygame.K_DOWN]:
+        elif keys[self.commands["down"]]:
             new_y += 1
         else:
             return False  # Nenhuma tecla pressionada

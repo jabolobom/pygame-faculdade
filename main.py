@@ -1,5 +1,5 @@
 import pygame
-from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, MOVE_DELAY
 from src.map import map_data, draw_map
 from src.player import Player
 from src.bomb import Bomb
@@ -13,12 +13,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bomberman Clone")
 clock = pygame.time.Clock()
 
-player = Player(1, 1)
+player_one = Player(1, 1, 1)
+player_two = Player(9, 7, 2)
+
 bombs = []
 explosions = []
-
-# Delay para movimento contínuo
-MOVE_DELAY = 150  # milissegundos
 last_move_time = 0
 
 running = True
@@ -30,19 +29,22 @@ while running:
             running = False
 
         elif event.type == pygame.KEYDOWN:
-            # Coloca bomba com espaço
-            if event.key == pygame.K_SPACE:
-                bombs.append(Bomb(player.grid_x, player.grid_y))
+            # Coloca bomba
+            if event.key == player_one.commands['place_bomb']:
+                bombs.append(Bomb(player_one.grid_x, player_one.grid_y))
+            if event.key == player_two.commands['place_bomb']:
+                bombs.append(Bomb(player_two.grid_x, player_two.grid_y))
 
     # Movimento contínuo com delay
     keys = pygame.key.get_pressed()
     if current_time - last_move_time > MOVE_DELAY:
-        if player.handle_movement(keys, map_data):
+        if player_one.handle_movement(keys, map_data) or player_two.handle_movement(keys, map_data):
             last_move_time = current_time
 
     screen.fill((0, 0, 0))
     draw_map(screen, map_data)
-    player.draw(screen)
+    player_one.draw(screen)
+    player_two.draw(screen)
 
     # Atualizar e desenhar bombas
     for bomb in bombs[:]:
@@ -62,7 +64,7 @@ while running:
 
     # Verificar se jogador colidiu com explosão
     for exp in explosions:
-        if exp['x'] == player.grid_x and exp['y'] == player.grid_y:
+        if exp['x'] == player_one.grid_x and exp['y'] == player_one.grid_y or exp['x'] == player_two.grid_x and exp['y'] == player_two.grid_y:
             print("GAME OVER: Você foi atingido pela explosão!")
             running = False
 

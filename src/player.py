@@ -12,6 +12,9 @@ class Player:
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 120  # ms entre quadros
         self.moving = False
+        self.initial_x = x
+        self.initial_y = y
+        self.lives = 3  # Número inicial de vidas
         self.move_speed = 4  # pixels por frame
 
         # Carrega animações para cada direção
@@ -95,3 +98,11 @@ class Player:
     def draw(self, screen):
         pos = (int(self.x), int(self.y))
         screen.blit(self.image, pos)
+
+    def respawn(self):
+        self.grid_x = self.initial_x
+        self.grid_y = self.initial_y
+        self.x = self.grid_x * TILE_SIZE
+        self.y = self.grid_y * TILE_SIZE
+        self.moving = False
+        self.direction = "down"

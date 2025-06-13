@@ -68,9 +68,31 @@ while running:
 
     # Verificar se jogador colidiu com explosão
     for exp in explosions:
-        if exp['x'] == player_one.grid_x and exp['y'] == player_one.grid_y or exp['x'] == player_two.grid_x and exp['y'] == player_two.grid_y:
-            print("GAME OVER: Você foi atingido pela explosão!")
-            running = False
+        # Player One
+        if exp['x'] == player_one.grid_x and exp['y'] == player_one.grid_y:
+            player_one.lives -= 1
+            print(f"Player 1 perdeu uma vida! Vidas restantes: {player_one.lives}")
+            if player_one.lives > 0:
+                player_one.respawn()
+            else:
+                print("Player 2 VENCEU!")
+                running = False
+
+        # Player Two
+        if exp['x'] == player_two.grid_x and exp['y'] == player_two.grid_y:
+            player_two.lives -= 1
+            print(f"Player 2 perdeu uma vida! Vidas restantes: {player_two.lives}")
+            if player_two.lives > 0:
+                player_two.respawn()
+            else:
+                print("Player 1 VENCEU!")
+                running = False
+
+    font = pygame.font.SysFont(None, 24)
+    vida_texto_1 = font.render(f"Player 1 Vidas: {player_one.lives}", True, (0, 0, 0))
+    vida_texto_2 = font.render(f"Player 2 Vidas: {player_two.lives}", True, (0, 0, 0))
+    screen.blit(vida_texto_1, (10, 10))
+    screen.blit(vida_texto_2, (10, 30))
 
     pygame.display.flip()
     clock.tick(FPS)

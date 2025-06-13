@@ -15,6 +15,7 @@ class Player:
         self.initial_x = x
         self.initial_y = y
         self.lives = 3  # Número inicial de vidas
+        self.score = 0  # Pontuação inicial
         self.move_speed = 4  # pixels por frame
 
         # Carrega animações para cada direção
@@ -106,3 +107,6 @@ class Player:
         self.y = self.grid_y * TILE_SIZE
         self.moving = False
         self.direction = "down"
+
+    def add_score(self, points):
+        self.score += points

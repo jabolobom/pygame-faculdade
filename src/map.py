@@ -82,4 +82,11 @@ def map_loader(ppath, upath): # basicamente o ESQUELETO da função, placeholder
 
     return None
 
+def count_remaining_destructibles(map_data):
+    count = 0
+    for row in map_data:
+        count += row.count(2)  # 2 representa bloco destrutível
+    return count
+
+
 map_data = map_loader(PREMADE_MAP_PATH, USER_MAP_PATH)

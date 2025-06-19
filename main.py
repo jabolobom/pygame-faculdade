@@ -1,8 +1,9 @@
 import pygame
-from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, MOVE_DELAY
+from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, MOVE_DELAY, VOLUME_HUD
 from src.map import map_data, draw_map
 from src.player import Player
 from src.bomb import Bomb
+from src.audio import Audio
 
 def count_remaining_destructibles(map_data):
     return sum(row.count(2) for row in map_data)
@@ -10,10 +11,13 @@ def count_remaining_destructibles(map_data):
 explosion_img = pygame.image.load("assets/images/explosion.png")
 explosion_img = pygame.transform.scale(explosion_img, (64, 64))  # Ou use TILE_SIZE
 
+
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Bomberman Clone")
 clock = pygame.time.Clock()
+
+audio = Audio("assets/audio/fight_music.mp3")
 
 player_one = Player(1, 1, 1)
 player_two = Player(9, 7, 2)
@@ -37,6 +41,15 @@ while running:
                 bombs.append(Bomb(player_one.grid_x, player_one.grid_y, owner=player_one))
             if event.key == player_two.commands['place_bomb']:
                 bombs.append(Bomb(player_two.grid_x, player_two.grid_y, owner=player_two))
+
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_x, mouse_y = event.pos
+
+            if audio.volume_bar_rect.collidepoint(mouse_x, mouse_y):
+                audio.set_volume(mouse_x)
+
+            if audio.mute_button_rect.collidepoint(mouse_x, mouse_y):
+                audio.mute_unmute()
 
     if not winner:
         keys = pygame.key.get_pressed()
@@ -108,6 +121,23 @@ while running:
     screen.blit(vida_texto_2, (10, 30))
     screen.blit(score_text_1, (SCREEN_WIDTH - score_text_1.get_width() - 10, 10))
     screen.blit(score_text_2, (SCREEN_WIDTH - score_text_2.get_width() - 10, 30))
+
+    audio.draw_volume_bar(screen)
+    audio.draw_mute_button(screen)
+
+    # bar_rect = pygame.Rect(VOLUME_HUD['VOLUME_BAR_X'], VOLUME_HUD['VOLUME_BAR_Y'], VOLUME_HUD['VOLUME_BAR_WIDTH'], VOLUME_HUD['VOLUME_BAR_HEIGHT'])
+    # pygame.draw.rect(screen, (0, 0, 0), bar_rect, 0, border_radius=5)
+    # knob_x = VOLUME_HUD['VOLUME_BAR_X'] + int(current_volume * VOLUME_HUD['VOLUME_BAR_WIDTH'])
+    # knob_y = VOLUME_HUD['VOLUME_BAR_Y'] + (VOLUME_HUD['VOLUME_BAR_HEIGHT'] // 2)
+    # pygame.draw.circle(screen, (0, 0, 0), (knob_x, knob_y), VOLUME_HUD['VOLUME_KNOB_RADIUS'])
+
+    # screen.blit(music_note_img, (VOLUME_HUD['MUTE_BUTTON_X'], VOLUME_HUD['MUTE_BUTTON_Y']))
+
+    # if is_muted:
+    #     bar_color = (255, 0, 0)
+    #     start_pos = (VOLUME_HUD['MUTE_BUTTON_X'], VOLUME_HUD['MUTE_BUTTON_Y'] + VOLUME_HUD['MUTE_BUTTON_HEIGHT'])
+    #     end_pos = (VOLUME_HUD['MUTE_BUTTON_X'] + VOLUME_HUD['MUTE_BUTTON_WIDTH'], VOLUME_HUD['MUTE_BUTTON_Y'])
+    #     pygame.draw.line(screen, bar_color, start_pos, end_pos, 5)
 
     if winner:
         # Mensagem centralizada

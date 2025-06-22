@@ -16,8 +16,16 @@ class Buttons():
     def update(self, screen):
         screen.blit(self.text, self.rect)
 
-    def change_color(self, new_color):
+    def change_color(self):
         if self.active:
             self.text = self.font.render(self.text_input, True, self.hover_color)
         else:
             self.text = self.font.render(self.text_input, True, self.base_color)
+
+    def check_for_input(self, position):
+        if self.rect.collidepoint(position):
+            self.active = True
+            return True
+        else:
+            self.active = False
+            return False

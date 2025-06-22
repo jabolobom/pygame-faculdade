@@ -54,4 +54,5 @@ VOLUME_HUD = {
 }
 
 # Delay para movimento contínuo
-MOVE_DELAY = 150  # milissegundos
+# zerei o delay para não conflitar a movimentação entre os jogadores
+MOVE_DELAY = 0  # milissegundos

@@ -4,6 +4,11 @@ from src.map import draw_map
 from src.player import Player
 from src.bomb import Bomb
 from src.audio import Audio
+from src.buttons import Buttons
+from src.settings import FONT_PATH  # para fonte personalizada
+
+def get_font(size):
+    return pygame.font.Font(FONT_PATH, size)
 
 def run(map_data):
     def count_remaining_destructibles(map_data):
@@ -133,33 +138,80 @@ def run(map_data):
         audio.draw_sound_hud(screen)
 
         if winner:
-            # Mensagem centralizada
-            victory_text = font.render(f"{winner} venceu!", True, (255, 0, 0))
-            victory_rect = victory_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 20))
-
-            # Delay com renderização final
-            victory_start = pygame.time.get_ticks()
-            while pygame.time.get_ticks() - victory_start < 3000:
+            waiting_choice = True
+            while waiting_choice:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                        if menu_btn.check_for_input(pygame.mouse.get_pos()):
+                            return  # volta para o menu principal
+                        if exit_btn.check_for_input(pygame.mouse.get_pos()):
+                            pygame.quit()
+                            exit()
 
                 screen.fill((0, 0, 0))
                 draw_map(screen, map_data)
                 player_one.draw(screen)
                 player_two.draw(screen)
+
+                # Retângulo de fundo da telinha
+                dialog_width = 400
+                dialog_height = 200
+                dialog_rect = pygame.Rect(
+                    (SCREEN_WIDTH - dialog_width) // 2,
+                    (SCREEN_HEIGHT - dialog_height) // 2,
+                    dialog_width,
+                    dialog_height
+                )
+                pygame.draw.rect(screen, (30, 30, 30), dialog_rect, border_radius=12)
+                pygame.draw.rect(screen, (200, 200, 200), dialog_rect, 3, border_radius=12)  # borda clara
+
+                # Mensagem centralizada
+                victory_text = get_font(23).render(f"{winner} venceu!", True, (255, 255, 0))
+                victory_rect = victory_text.get_rect(center=(dialog_rect.centerx, dialog_rect.top + 40))
+
+            
+                # Tela de fim de jogo com botões
+                button_font = get_font(22)
+
+                menu_btn = Buttons(
+                    pos=[dialog_rect.centerx, dialog_rect.top + 100],
+                    text_input="Menu Principal",
+                    font=button_font,
+                    base_color=(255, 255, 255),
+                    hover_color=(0, 255, 0)
+                )
+
+                exit_btn = Buttons(
+                    pos=[dialog_rect.centerx, dialog_rect.top + 140],
+                    text_input="Sair",
+                    font=button_font,
+                    base_color=(255, 255, 255),
+                    hover_color=(255, 0, 0)
+                )
+
                 screen.blit(score_text_1, (SCREEN_WIDTH - score_text_1.get_width() - 10, 10))
                 screen.blit(score_text_2, (SCREEN_WIDTH - score_text_2.get_width() - 10, 30))
                 screen.blit(vida_texto_1, (10, 10))
                 screen.blit(vida_texto_2, (10, 30))
                 screen.blit(victory_text, victory_rect)
+
+                mouse_pos = pygame.mouse.get_pos()
+
+                menu_btn.check_for_input(mouse_pos)
+                menu_btn.change_color()
+                menu_btn.update(screen)
+
+                exit_btn.check_for_input(mouse_pos)
+                exit_btn.change_color()
+                exit_btn.update(screen)
+
                 pygame.display.flip()
                 clock.tick(FPS)
 
-            running = False
 
         pygame.display.flip()
         clock.tick(FPS)
 
-    pygame.quit()

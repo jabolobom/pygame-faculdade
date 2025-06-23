@@ -10,13 +10,81 @@ from src.settings import FONT_PATH  # para fonte personalizada
 def get_font(size):
     return pygame.font.Font(FONT_PATH, size)
 
+def show_controls_screen(screen, clock, map_data, player_one, player_two):
+    dialog_width = 500
+    dialog_height = 300
+    dialog_rect = pygame.Rect(
+        (SCREEN_WIDTH - dialog_width) // 2,
+        (SCREEN_HEIGHT - dialog_height) // 2,
+        dialog_width,
+        dialog_height
+    )
+
+    title_font = get_font(30)
+    text_font = get_font(17)
+    button_font = get_font(21)
+
+    title_text = title_font.render("Comandos", True, (255, 255, 255))
+
+    controls_lines = [
+        "Player 1:",
+        "WASD para andar",
+        "Q para colocar a bomba",
+        "",
+        "Player 2:",
+        "Setinhas para andar",
+        "ENTER para colocar a bomba"
+    ]
+
+    # Botão "Começar"
+    start_btn = Buttons(
+        pos=[dialog_rect.centerx, dialog_rect.bottom - 40],
+        text_input="Começar!",
+        font=button_font,
+        base_color=(255, 255, 255),
+        hover_color=(0, 255, 0)
+    )
+
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if start_btn.check_for_input(pygame.mouse.get_pos()):
+                    waiting = False
+
+        draw_map(screen, map_data)
+        player_one.draw(screen)
+        player_two.draw(screen)
+
+        pygame.draw.rect(screen, (30, 30, 30), dialog_rect, border_radius=12)
+        pygame.draw.rect(screen, (200, 200, 200), dialog_rect, 3, border_radius=12)
+
+        # Título
+        screen.blit(title_text, title_text.get_rect(center=(dialog_rect.centerx, dialog_rect.top + 30)))
+
+        # Textos de controle
+        for i, line in enumerate(controls_lines):
+            text = text_font.render(line, True, (255, 255, 255))
+            screen.blit(text, (dialog_rect.left + 40, dialog_rect.top + 70 + i * 25))
+
+        # Botão
+        mouse_pos = pygame.mouse.get_pos()
+        start_btn.check_for_input(mouse_pos)
+        start_btn.change_color()
+        start_btn.update(screen)
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
 def run(map_data):
     def count_remaining_destructibles(map_data):
         return sum(row.count(2) for row in map_data)
 
     explosion_img = pygame.image.load("assets/images/explosion.png")
     explosion_img = pygame.transform.scale(explosion_img, (64, 64))  # Ou use TILE_SIZE
-
 
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -33,6 +101,19 @@ def run(map_data):
     last_move_time = 0
 
     winner = None
+    
+    screen.fill((0, 0, 0))
+    draw_map(screen, map_data)
+
+    player_one.draw(screen)
+    player_two.draw(screen)
+
+    player_one.update()
+    player_two.update()
+
+    pygame.display.flip()
+
+    show_controls_screen(screen, clock, map_data, player_one, player_two)
 
     running = True
     while running:

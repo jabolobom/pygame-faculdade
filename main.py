@@ -99,7 +99,7 @@ def main_menu():
             selected_map = map_selection_menu()
             if selected_map:
                 run(selected_map)
-            pygame.quit()
+                
         start_btn.update(screen)
 
         pygame.display.update()

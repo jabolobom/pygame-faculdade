@@ -3,14 +3,13 @@ from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, MOVE_DELAY
 from src.map import draw_map
 from src.player import Player
 from src.bomb import Bomb
-from src.audio import Audio
 from src.buttons import Buttons
 from src.settings import FONT_PATH  # para fonte personalizada
 
 def get_font(size):
     return pygame.font.Font(FONT_PATH, size)
 
-def run(map_data):
+def run(map_data, audio):
     def count_remaining_destructibles(map_data):
         return sum(row.count(2) for row in map_data)
 
@@ -23,7 +22,7 @@ def run(map_data):
     pygame.display.set_caption("Bomberman Clone")
     clock = pygame.time.Clock()
 
-    audio = Audio("assets/audio/fight_music.mp3")
+    audio.play_music("assets/audio/fight_music.mp3")
 
     player_one = Player(1, 1, 1)
     player_two = Player(9, 7, 2)

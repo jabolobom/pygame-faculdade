@@ -1,4 +1,5 @@
 import pygame
+import random
 from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
@@ -48,12 +49,12 @@ VOLUME_HUD = {
 }
 
 class Audio:
-    def __init__(self, source):
-        pygame.mixer.music.load(source)
+    def __init__(self):
+        #pygame.mixer.music.load()
         self.current_volume_music = 0.5
         self.is_muted_music = False
         pygame.mixer.music.set_volume(self.current_volume_music)
-        pygame.mixer.music.play(-1)
+        #pygame.mixer.music.play(-1)
 
         self.music_note_img = pygame.image.load("assets/images/music_note.png").convert_alpha()
         self.music_note_img = pygame.transform.scale(self.music_note_img, (MUSIC_HUD['MUTE_BUTTON_WIDTH'], MUSIC_HUD['MUTE_BUTTON_HEIGHT']))
@@ -74,9 +75,18 @@ class Audio:
         self.sfx_sounds = {}
         self.load_sfx_sounds()
 
+        self.music_tracks = [
+            "assets/audio/music_1.mp3",
+            "assets/audio/music_2.mp3",
+            "assets/audio/music_3.mp3"
+        ]
+
     def load_sfx_sounds(self):
         self.sfx_sounds['bomb_place'] = pygame.mixer.Sound("assets/audio/bomb_place.mp3")
         self.sfx_sounds['explosion'] = pygame.mixer.Sound("assets/audio/explosion.mp3")
+        self.sfx_sounds['game_open'] = pygame.mixer.Sound("assets/audio/game_open.mp3")
+        self.sfx_sounds['game_start'] = pygame.mixer.Sound("assets/audio/game_start.mp3")
+        self.sfx_sounds['menu_select'] = pygame.mixer.Sound("assets/audio/menu_select.mp3")
         for sound in self.sfx_sounds.values():
             sound.set_volume(self.current_volume_sfx)
 
@@ -151,3 +161,18 @@ class Audio:
             start_pos = (VOLUME_HUD['VOLUME_MUTE_BUTTON_X'], VOLUME_HUD['VOLUME_MUTE_BUTTON_Y'] + VOLUME_HUD['MUTE_BUTTON_HEIGHT'])
             end_pos = (VOLUME_HUD['VOLUME_MUTE_BUTTON_X'] + VOLUME_HUD['MUTE_BUTTON_WIDTH'], VOLUME_HUD['VOLUME_MUTE_BUTTON_Y'])
             pygame.draw.line(screen, bar_color, start_pos, end_pos, 5)
+
+    def play_music(self, source):
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+
+        pygame.mixer.music.load(source)
+        pygame.mixer.music.set_volume(self.current_volume_music)
+        pygame.mixer.music.play(-1)
+
+    def play_random_music(self):
+        if not self.music_tracks: # Garante que há músicas na lista
+            print("Nenhuma música disponível para tocar aleatoriamente!")
+            return
+        chosen_music = random.choice(self.music_tracks)
+        self.play_music(chosen_music)

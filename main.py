@@ -3,6 +3,7 @@ from src.settings import SCREEN_WIDTH, SCREEN_HEIGHT, FONT_PATH
 from src.buttons import Buttons
 from src.audio import Audio
 from main_game import run
+from src.level_creator import run_level_creator
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -21,7 +22,7 @@ def get_maps():
     for folder in ("premade", "usermade"):
         path = os.path.join(maps_dir, folder)
         for f in os.listdir(path):
-            if f.endswith(".json"):
+            if f.endswith(".json") and f != "empty.json":
                 premade.append({
                     "name": f.replace(".json", ""),
                     "path": os.path.join(path, f)
@@ -106,6 +107,7 @@ def main_menu():
         audio.draw_music_hud(screen)
         audio.draw_sound_hud(screen)
 
+        # start button
         start_btn = Buttons(
             pos=[SCREEN_WIDTH//2, SCREEN_HEIGHT//2],
             text_input="Start",
@@ -124,6 +126,23 @@ def main_menu():
                 audio.play_random_music()
                 
         start_btn.update(screen)
+
+        # level editor button
+        editor_btn = Buttons(
+            pos = [SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 60],
+            text_input= "Criador de mapas",
+            font=get_font(20),
+            base_color=(255,255,255),
+            hover_color=(0,255,0)
+        )
+        editor_btn.check_for_input(mouse_pos)
+        editor_btn.change_color()
+
+        if pygame.mouse.get_pressed()[0] and editor_btn.check_for_input(mouse_pos):
+            audio.play_sfx('menu_select')
+            run_level_creator()
+
+        editor_btn.update(screen)
 
         pygame.display.update()
 

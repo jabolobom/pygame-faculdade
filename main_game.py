@@ -10,7 +10,7 @@ def get_font(size):
     return pygame.font.Font(FONT_PATH, size)
 
 
-def show_controls_screen(screen, clock, map_data, player_one, player_two):
+def show_controls_screen(screen, clock, map_data, player_one, player_two, audio):
     dialog_width = 500
     dialog_height = 300
     dialog_rect = pygame.Rect(
@@ -115,7 +115,7 @@ def run(map_data, audio):
 
     pygame.display.flip()
 
-    show_controls_screen(screen, clock, map_data, player_one, player_two)
+    show_controls_screen(screen, clock, map_data, player_one, player_two, audio)
 
     running = True
     while running:

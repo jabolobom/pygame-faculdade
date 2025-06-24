@@ -4,9 +4,12 @@ from src.settings import *
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+def get_font(size):
+    return pygame.font.Font(FONT_PATH, size)
+
 BG_COLOR = pygame.Color("darkblue")
 FONT_COLOR = pygame.Color("white")
-FONT = pygame.font.SysFont("comicsans", 32)
+FONT = get_font(32)
 
 class InputBox:
     def __init__(self, x, y, width, height, text=''):

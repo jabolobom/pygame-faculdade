@@ -2,4 +2,7 @@
 .venv/
 __pycache__/
 venv/
+build/
+dist/
+main.spec
 

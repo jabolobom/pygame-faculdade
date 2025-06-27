@@ -1,12 +1,12 @@
 # Setup para rodar
 
-2. **Criar o ambiente**
+1. **Criar o ambiente**
 
    ```bash
    python -m .venv .venv
    ```
 
-3. **Ativar ambiente virtual**
+2. **Ativar ambiente virtual**
    **Windows:**
 
    ```bash
@@ -19,7 +19,7 @@
    source .venv/bin/activate
    ```
 
-4. **Instalar dependências**
+3. **Instalar dependências**
 
    ```bash
    pip install -r requirements.txt

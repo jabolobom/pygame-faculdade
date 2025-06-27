@@ -25,12 +25,6 @@
    pip install -r requirements.txt
    ```
 
-   **Sair do ambiente**
-
-   ```bash
-   deactivate
-   ```
-
    **Rodar o código**
 
    ```bash
